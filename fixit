@@ -1,0 +1,14 @@
+cp php.ini-development /usr/local/php/php.ini
+cp /usr/local/etc/php-fpm.conf.default /usr/local/etc/php-fpm.conf
+cp sapi/fpm/php-fpm /usr/local/bin
+ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
+perl -i -npe 's/NONE\///g' /usr/local/etc/php-fpm.conf
+cp /usr/local/etc/php-fpm.d/www.conf.default /usr/local/etc/php-fpm.d/www.conf
+perl -i -npe 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /usr/local/php/php.ini
+echo 'user = www-data'  >>/usr/local/etc/php-fpm.conf
+echo 'group = www-data' >>/usr/local/etc/php-fpm.conf
+perl -i -npe 's/index.html/index.php index.html/g' /usr/local/nginx/conf/nginx.conf
+perl -i -npe 's/location \//include extra.conf; location \//g' /usr/local/nginx/conf/nginx.conf
+rm -f /usr/local/nginx/html/index.html
+echo "<?php phpinfo(); ?>" >> /usr/local/nginx/html/index.php
+
